@@ -17,8 +17,8 @@ class Tensor:
         
         self.require_grads = require_grads
         for symbol in dimensions_symbol:
-            if not symbol in used_dimensions_symbol:
-                used_dimensions_symbol.add(symbol)
+            if not symbol in Tensor.used_dimensions_symbol:
+                Tensor.used_dimensions_symbol.add(symbol)
         
     def apply_dimension(self, symbol, value):
         dimensions = list(self.dimensions)
@@ -100,7 +100,7 @@ class Tensor:
         output_tensor = Tensor(tensor.dimensions_symbol, label)
         output_tensor.parent.append(tensor)
         output_tensor.identical_dimensions.extend(list(tensor.dimensions_symbol))
-        return output_dimensions
+        return output_tensor
     
     def __str__(self):
         ret = f"label={self.label}, dimensions_symbol={self.dimensions_symbol}, identical={self.identical_dimensions}, common={self.common_dimensions}, merged={self.merged_dimensions}, parents=["
@@ -112,7 +112,7 @@ class Tensor:
     @staticmethod
     def get_new_dimension_symbol(prefix=""):
         symbol = prefix + "0"
-        while symbol in used_dimensions_symbol:
+        while symbol in Tensor.used_dimensions_symbol:
             num = random.randint(0, 1e5)
             symbol = f"{prefix}{num}"
         return symbol
